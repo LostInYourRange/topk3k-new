@@ -38,7 +38,7 @@ topkek.navigator = topkek.center.Navigation;
 
 AllowHovers = false;
 local PlayerChatHook, UpdateBanlist = nil, nil;
-local cmd = {};
+local cmd = {util = nil, commands = nil;};
 
 --// data //--
 topkek.data.windows = {
@@ -57,7 +57,7 @@ topkek.data.windows = {
 	'Banlist',
 };
 
-color3 = function(r,g,b)
+local color3 = function(r,g,b)
 	return Color3.new(r/255, g/255, b/255);
 end;
 --// doggo dropdown //--
@@ -653,7 +653,8 @@ function topkek.tools.util.scalePlayer(sc,plr)
 				v.Parent = game.Lighting;
 			end;
 		end;
-			
+		
+
 	    local Head = chr['Head'];
 		local UT = chr["UpperTorso"] or chr['Torso'];
 	    local LT = chr["LowerTorso"] or chr['Torso'];
@@ -667,71 +668,56 @@ function topkek.tools.util.scalePlayer(sc,plr)
 		local RLL = chr['RightLowerLeg'] or chr["Right Leg"];
 	    local HRP = chr['HumanoidRootPart'];
 	
+		local bodyparts = {Head, UT, LT, LUA, LLA, RUA, RLA, LUL, LLL, RUL, RLL, HRP};
+		local LA, RA, LL, RL = LUA or LLA, RUA or RLA, LUL or LLL, RUL or RLL;
+		local motorparts = {LA, RA, LL, RL};
+		local motornames = {"Neck", "Left Shoulder", "Right Shoulder", "Left Hip", "Right Hip"};
+		local motors = {
+			Head = {
+				C0 = CFrame.new(0, 1*scl, 0)*CFrame.Angles(-1.6, 0, 3.1);
+				C1 = CFrame.new(0, -0.5*scl, 0) * CFrame.Angles(-1.6, 0, 3.1);
+			};
+			LA = {
+
+			};
+			RA = {
+
+			};
+			LL = {
+
+			};
+			RL = {
+
+			};
+			HRP = {
+
+			};
+		};
 	    wait(0.1);
-	   
-	    Head.formFactor = 3;
-	    Torso.formFactor = 3;
-	    LA.formFactor = 3;
-	    RA.formFactor = 3;
-	    LL.formFactor = 3;
-	    RL.formFactor = 3;
-	    HRP.formFactor = 3;
+		pcall(function()
+			for i, v in next, bodyparts do
+				v.formFactor = 3;
+				v.Size = Vector3.new(scl*2, scl, scl);
+				for i2, v2 in next, motors do
+					for i3, v3 in next, motorparts do
+						local Motor, Motor2 = Instance.new("Motor6D", LT or UT), Instance.new("Motor6D", HRP);
+						Motor.Part0 = LT or UT;
+						Motor.Part1 = v or (LUA and LLA and RUA and RLA and LUL and LLL and RUL and RLL and Head);
+						Motor2.Part0, Motor2.Part1 = HRP, UT or LT;
+						Motor.C0 = motors[v3].C0;
+						Motor.C1 = v2.C1;
+					end;
+				end;
+			end;
+			
+		end);
 	    
-	    Head.Size = Vector3.new(scl * 2, scl, scl);
-	    Torso.Size = Vector3.new(scl * 2, scl * 2, scl);
-	    LA.Size = Vector3.new(scl, scl * 2, scl);
-	    RA.Size = Vector3.new(scl, scl * 2, scl);
-	    LL.Size = Vector3.new(scl, scl * 2, scl);
-	    RL.Size = Vector3.new(scl, scl * 2, scl);
-	    HRP.Size = Vector3.new(scl * 2, scl * 2, scl);
-	    
-	    local Motor1 = Instance.new('Motor6D', Torso);
-	    Motor1.Part0 = Torso;
-	    Motor1.Part1 = Head;
-    	Motor1.C0 = CFrame.new(0, 1 * scl, 0) * CFrame.Angles(-1.6, 0, 3.1);
-    	Motor1.C1 = CFrame.new(0, -0.5 * scl, 0) * CFrame.Angles(-1.6, 0, 3.1);
-    	Motor1.Name = "Neck";
-			    
-    	local Motor2 = Instance.new('Motor6D', Torso);
-    	Motor2.Part0 = Torso;
-    	Motor2.Part1 = LA;
-    	Motor2.C0 = CFrame.new(-1 * scl, 0.5 * scl, 0) * CFrame.Angles(0, -1.6, 0);
-    	Motor2.C1 = CFrame.new(0.5 * scl, 0.5 * scl, 0) * CFrame.Angles(0, -1.6, 0);
-    	Motor2.Name = "Left Shoulder";
-    	
-    	local Motor3 = Instance.new('Motor6D', Torso);
-   		Motor3.Part0 = Torso;
-    	Motor3.Part1 = RA;
-    	Motor3.C0 = CFrame.new(1 * scl, 0.5 * scl, 0) * CFrame.Angles(0, 1.6, 0);
-    	Motor3.C1 = CFrame.new(-0.5 * scl, 0.5 * scl, 0) * CFrame.Angles(0, 1.6, 0);
-    	Motor3.Name = "Right Shoulder";
-    	
-    	local Motor4 = Instance.new('Motor6D', Torso);
-    	Motor4.Part0 = Torso;
-    	Motor4.Part1 = LL;
-    	Motor4.C0 = CFrame.new(-1 * scl, -1 * scl, 0) * CFrame.Angles(0, -1.6, 0);
-    	Motor4.C1 = CFrame.new(-0.5 * scl, 1 * scl, 0) * CFrame.Angles(0, -1.6, 0);
-    	Motor4.Name = "Left Hip";
-    	
-    	local Motor5 = Instance.new('Motor6D', Torso);
-    	Motor5.Part0 = Torso;
-    	Motor5.Part1 = RL;
-    	Motor5.C0 = CFrame.new(1 * scl, -1 * scl, 0) * CFrame.Angles(0, 1.6, 0);
-    	Motor5.C1 = CFrame.new(0.5 * scl, 1 * scl, 0) * CFrame.Angles(0, 1.6, 0);
-    	Motor5.Name = "Right Hip";
-    	
-    	local Motor6 = Instance.new('Motor6D', HRP);
-    	Motor6.Part0 = HRP;
-    	Motor6.Part1 = Torso;
-    	Motor6.C0 = CFrame.new(0, 0, 0) * CFrame.Angles(-1.6, 0, -3.1);
-    	Motor6.C1 = CFrame.new(0, 0, 0) * CFrame.Angles(-1.6, 0, -3.1);
-    	    
 	end;
 	
 	scale(pchar, sc);
 	
 	for _,v in pairs(game.Lighting:GetChildren()) do
-		if v:IsA("Hat") then;
+		if v:IsA("Hat") then
 			v.Parent = pchar;
 		end;
 	end;
@@ -785,7 +771,7 @@ function topkek.tools.util.weenieHutJunior(plr)
 	Tip.BottomSurface=0
 	Tip.Size=Vector3.new(1, 1, 1)
 	Tip.CanCollide=true
-	Tip.Touched:connect(function(prt) if prt.Parent~=player then spawn(function() for i=1, 5 do local pert=Instance.new("Part", player) pert.CFrame=CFrame.new(prt.Position) pert.CanCollide=true local mesh=Instance.new("BlockMesh", pert) mesh.Scale=Vector3.new(0.2,0.2,0.2) pert.BrickColor=BrickColor.new("White") end end) end end)
+	Tip.Touched:connect(function(prt) if prt.Parent~=topkek.lplr.Character then spawn(function() for i=1, 5 do local pert=Instance.new("Part", topkek.lplr.Character) pert.CFrame=CFrame.new(prt.Position) pert.CanCollide=true local mesh=Instance.new("BlockMesh", pert) mesh.Scale=Vector3.new(0.2,0.2,0.2) pert.BrickColor=BrickColor.new("White") end end) end end)
 	Cyln2=Instance.new("SpecialMesh", Tip)
 	Cyln2.MeshType='Sphere'
 	Cyln2.Scale=Vector3.new(0.6,0.6,0.6)
@@ -921,11 +907,11 @@ function topkek.banmgr.init()
 	end)
 end
 --// settings //--
-topkek.settings = {}
-topkek.settingsTable = {}
+topkek.settings = {};
+topkek.settingsTable = {};
 function topkek.settings.write()
-	--writefile("testplzignore.lua", "", game:GetService('HttpService'):JSONEncode(topkek.settingsTable))
-end
+	writefile("TOPKEK_SETTINGS.dat", game:GetService('HttpService'):JSONEncode(topkek.settingsTable))
+end;
 function topkek.settings.get()
 if game.Players.LocalPlayer.Character then
 		print("No settings! Making new ...")
@@ -940,11 +926,11 @@ if game.Players.LocalPlayer.Character then
 		topkek.settings.write()
 		return topkek.settingsTable
 	else
-		local lset = game:GetService('HttpService'):JSONDecode(set)
-		topkek.settingsTable = lset
-		return lset
-end
-end
+		local lset = game:GetService('HttpService'):JSONDecode(topkek.settingsTable)
+		topkek.settingsTable = lset;
+		return lset;
+	end;
+end;
 --// shortcuts //--
 local tk = {}
 tk.ob = topkek.tools.util.Object
@@ -1365,15 +1351,7 @@ topkek.navigation.buildNavigator = function()
 end
 topkek.navigation.buildTopbar = function()
 	local top = topkek.topbar
-	local FELabel = top.Controllers.IsFE
 	top.PlayerName.Text = topkek.lplr.Name
-	if game:GetService('Workspace').FilteringEnabled == true then
-		FELabel.Text = "FE Game"
-		FELabel.TextColor3 = BrickColor.new("Bright red").Color
-	else
-		FELabel.Text = "Not FE"
-		FELabel.TextColor3 = BrickColor.new("Bright green").Color
-	end
 	top.Controllers.Hide.MouseButton1Down:connect(function()
 		if topkek.navigation.windowState == 0 then
 			topkek.navigation.windowState = 1
@@ -1390,33 +1368,13 @@ topkek.navigation.buildTopbar = function()
 		PlayerChatHook:disconnect()
 	end)
 	
-end
-topkek.navigation.initCommandBar = function()
-	DistributedCmdBar, cmd = topkek.holder.Command, {}
-	loadstring(game:GetObjects("rbxassetid://685510751")[1].Source)()
-	DistributedCmdBar.FocusLost:connect(function(e)
-		if e == true then
-			cmd.commands.run(DistributedCmdBar.Text)
-			DistributedCmdBar.Text = ''
-		end
-	end)
-	
-	PlayerChatHook = cmd.players.PlayerChatted:connect(function (_, plr, msg, _)
-		if cmd.util.isadmin(plr.Name) then
-			if msg:sub(1,1) == cmd.prefix or msg:sub(1,1) == cmd.hidden then
-				cmd.commands.run(msg:sub(2, #msg))
-			end
-		end
-	end)
-end
+end;
+
 topkek.navigation.buildHomePage = function()
-	local count = 0
-	for _, _ in pairs(cmd.commands.store) do count = count + 1 end
 	local hook = topkek.tools.gui:hookContainer(topkek.tools.util.getContainer('Home').Container, true)
-	hook:drawText(1, 'T0PK3K 4.0 ProtoSmasher Edition edited by bork')
-	hook:drawText(1, 'Patch version 1.0.5')
+	hook:drawText(1, 'T0PK3K 4.0: hexaware edition')
+	hook:drawText(1, 'Patch version 2.0.0')
 	hook:drawText(1, 'Commandbase patch version 1.0.0')
-	hook:drawText(1, 'Number of commands: ' .. tostring(count))
 	local stime = hook:drawText(1, 'Server Time: 0')
 	spawn(function()
 		while true do
@@ -1431,8 +1389,6 @@ topkek.navigation.buildHomePage = function()
 			wait(0.5)
 		end
 	end)
-	local fe = game:GetService('Workspace').FilteringEnabled
-	hook:drawText(1, 'FilteringEnabled: ' .. (fe and "YES" or "NO"))
 	hook:drawText(1, 'PlaceId: ' .. tostring(game.PlaceId))
 	hook:drawText(1, 'same', 55)
 end
@@ -1442,7 +1398,6 @@ topkek.navigation.buildContainers = function()
 	end
 end
 
-topkek.navigation.initCommandBar()
 topkek.navigation.buildContainers()
 topkek.navigation.buildTopbar()
 topkek.navigation.buildHomePage()
@@ -2102,10 +2057,8 @@ end)
 --// SERVER //--
 local servwin = topkek.tools.gui:hookContainer(topkek.tools.util.getContainer('Server').Container)
 local detailWin = servwin:drawContainer(1, 100, nil, nil, 18)
-detailWin:drawText(1, 'Job ID: ' .. (game.JobId and (game.JobId ~= "") or "???"))
 detailWin:drawText(1, 'Game Name: ' .. game:service'MarketplaceService':GetProductInfo(game.PlaceId).Name)
 detailWin:drawText(1, 'Creator Name: ' .. game:GetService('Players'):GetNameFromUserIdAsync(game.CreatorId))
-detailWin:drawText(1, 'Genre: ' .. tostring(game.Genre))
 servwin:drawButton(1/2, 'Shutdown', function()
 	workspace.Gravity = 0/0
 end)
@@ -2888,24 +2841,7 @@ function makeCatalog(keyword, page)
 	end;
 end;
 makeCatalog("", 1);
---// CMDS //--
-cmdwin = topkek.tools.gui:hookContainer(topkek.tools.util.getContainer('Commands').Container);
-count = 0;
-for _, _ in pairs(cmd.commands.store) do count = count + 1; end;
-cmdwin:drawText(1, tostring(count) .. " Commands");
-cmdwin:drawText(1, 'Chat Prefix: /');
-local cmdlist = cmdwin:drawScrollingContainer(260);
-for i, v in pairs(cmd.commands.fmtstore) do
-	local xfmt = {};
-	local str = "  ;" .. i .. " ";
-	for form in v:gmatch("[^%%]+") do
-		if form ~= 'cmd' then
-			if form == 'inf' then form = 'str' end;
-			str = str .. "{" .. form .. "} ";
-		end;
-	end;
-	cmdlist:drawText(1, str);
-end;
+
 --// MUSIC //--
 local musicwin = topkek.tools.gui:hookContainer(topkek.tools.util.getContainer('Music').Container);
 Sounds = {
@@ -2945,7 +2881,7 @@ local cursel;
 local xcursel = 0;
 local scr = musicwin:drawScrollingContainer(230);
 for i, v in pairs(Sounds) do
-	scr:drawButton(1, v[1] .. " - " .. tonumber(v[2]), function()
+	scr:drawButton(1, v[1], function()
 		cursel.Text = "Currently Selected - " .. v[1];
 		xcursel = v[2];
 	end);
@@ -3012,7 +2948,7 @@ end)
 --// SETTINGS // --
 local setwin = topkek.tools.gui:hookContainer(topkek.tools.util.getContainer('Settings').Container)
 setwin:drawText(1, 'Patch: ' .. topkek.patch)
-setwin:drawText(1, 'Devnote: foh skids')
+setwin:drawText(1, 'Devnote: hexaware on top')
 setwin:drawText(1, [[
 	=== CREDITS ===
 	
